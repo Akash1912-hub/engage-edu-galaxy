@@ -1,6 +1,6 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Clock, Users, Star, BookOpen, Award } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface Course {
   id: string;
@@ -17,10 +17,18 @@ interface Course {
 
 interface CourseCardProps {
   course: Course;
+  onViewCourse?: (courseId: string) => void;
 }
 
-const CourseCard = ({ course }: CourseCardProps) => {
-  const navigate = useNavigate();
+const CourseCard = ({ course, onViewCourse }: CourseCardProps) => {
+  const handleViewCourse = () => {
+    if (onViewCourse) {
+      onViewCourse(course.id);
+    } else {
+      // Fallback for when navigation is not available
+      window.location.href = `/course/${course.id}`;
+    }
+  };
   return (
     <div className="group bg-card rounded-xl shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden hover:-translate-y-2">
       {/* Course Image */}
@@ -85,7 +93,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
           <Button 
             variant="default" 
             className="group-hover:variant-hero transition-colors"
-            onClick={() => navigate(`/course/${course.id}`)}
+            onClick={handleViewCourse}
           >
             <BookOpen className="h-4 w-4 mr-2" />
             View Course

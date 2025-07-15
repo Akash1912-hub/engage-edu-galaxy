@@ -3,11 +3,17 @@ import { Button } from "@/components/ui/button";
 import CourseCard from "./CourseCard";
 import { ArrowRight, Filter, Search } from "lucide-react";
 import { useCourses } from "@/hooks/useCourses";
+import { useNavigate } from "react-router-dom";
 
 const FeaturedCourses = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const { courses, loading } = useCourses(selectedCategory, searchTerm);
+
+  const handleViewCourse = (courseId: string) => {
+    navigate(`/course/${courseId}`);
+  };
 
   const categories = ["All", "Programming", "AI/ML", "Design", "Marketing", "Data Science", "Blockchain"];
 
@@ -73,18 +79,21 @@ const FeaturedCourses = () => {
                 className="animate-fade-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <CourseCard course={{
-                  id: course.id,
-                  title: course.title,
-                  instructor: course.instructor.full_name,
-                  image: course.thumbnail_url,
-                  duration: `${course.duration_hours} hours`,
-                  students: course.total_students,
-                  rating: course.rating,
-                  price: course.price,
-                  level: course.level,
-                  category: course.category
-                }} />
+                <CourseCard 
+                  course={{
+                    id: course.id,
+                    title: course.title,
+                    instructor: course.instructor.full_name,
+                    image: course.thumbnail_url,
+                    duration: `${course.duration_hours} hours`,
+                    students: course.total_students,
+                    rating: course.rating,
+                    price: course.price,
+                    level: course.level,
+                    category: course.category
+                  }} 
+                  onViewCourse={handleViewCourse}
+                />
               </div>
             ))}
           </div>
