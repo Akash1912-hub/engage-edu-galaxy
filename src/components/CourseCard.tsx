@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Clock, Users, Star, BookOpen, Award } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Course {
   id: string;
@@ -19,6 +20,7 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({ course }: CourseCardProps) => {
+  const navigate = useNavigate();
   return (
     <div className="group bg-card rounded-xl shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden hover:-translate-y-2">
       {/* Course Image */}
@@ -80,9 +82,13 @@ const CourseCard = ({ course }: CourseCardProps) => {
             <span className="text-2xl font-bold text-primary">${course.price}</span>
             <span className="text-sm text-muted-foreground ml-1">/ course</span>
           </div>
-          <Button variant="default" className="group-hover:variant-hero transition-colors">
+          <Button 
+            variant="default" 
+            className="group-hover:variant-hero transition-colors"
+            onClick={() => navigate(`/course/${course.id}`)}
+          >
             <BookOpen className="h-4 w-4 mr-2" />
-            Enroll Now
+            View Course
           </Button>
         </div>
       </div>

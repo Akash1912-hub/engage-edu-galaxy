@@ -1,7 +1,24 @@
 import { Button } from "@/components/ui/button";
-import { BookOpen, Menu, User, Search, Bell } from "lucide-react";
+import { BookOpen, Menu, User, Search, Bell, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Header = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
   return (
     <header className="bg-background/95 backdrop-blur-md border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -37,16 +54,60 @@ const Header = () => {
 
           {/* Auth & User Actions */}
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="hidden md:flex">
-              <Bell className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" className="hidden md:flex">
-              <User className="h-4 w-4 mr-2" />
-              Sign In
-            </Button>
-            <Button variant="hero" className="hidden md:flex">
-              Get Started
-            </Button>
+            {user ? (
+              <>
+                <Button variant="ghost" size="icon" className="hidden md:flex">
+                  <Bell className="h-4 w-4" />
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="hidden md:flex gap-2">
+                      <Avatar className="h-6 w-6">
+                        <AvatarFallback className="text-xs">
+                          {user.email?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm">
+                        {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem onClick={() => navigate('/profile')}>
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/my-courses')}>
+                      <BookOpen className="mr-2 h-4 w-4" />
+                      My Courses
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="outline" 
+                  className="hidden md:flex"
+                  onClick={() => navigate('/auth')}
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+                <Button 
+                  variant="hero" 
+                  className="hidden md:flex"
+                  onClick={() => navigate('/auth')}
+                >
+                  Get Started
+                </Button>
+              </>
+            )}
             <Button variant="ghost" size="icon" className="md:hidden">
               <Menu className="h-4 w-4" />
             </Button>
